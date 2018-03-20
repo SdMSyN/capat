@@ -33,13 +33,29 @@ $numContr = $rowGetUserData['numContr'];
 $nameTypeContr = $rowGetUserData['nameTypeContr'];
 
 //Obtenemos el tipo de servicio
-$sqlGetTypeServ = "SELECT $tTypeServ.nombre as nameTypeServ "
+$sqlGetTypeServ = "SELECT $tTypeServ.id as idTypeServ, $tTypeServ.nombre as nameTypeServ "
         . "FROM $tCuotas "
         . "INNER JOIN $tTypeServ ON $tTypeServ.id = $tCuotas.tipo_servicio_id "
         . "WHERE $tCuotas.id = '$typeServ' ";
 $resGetTypeServ = $con->query($sqlGetTypeServ);
 $rowGetTypeServ = $resGetTypeServ->fetch_assoc();
+$idTypeServ = $rowGetTypeServ['idTypeServ'];
 $nameTypeServ = $rowGetTypeServ['nameTypeServ'];
+
+//Insertamos información del pago
+$cad = '';
+$fechaInicio = $yearServ."-".($monthBegin+1)."-01";
+$fechaFin = $yearServ."-".$monthEnd."-01";
+$sqlInsertPay = "INSERT INTO $tPays "
+        . "(usuario_data_id, tipo_servicio_id, fecha_inicio, fecha_fin, monto, estatus_id, creado, actualizado) "
+        . "VALUES ('$idUser', '$idTypeServ', '$fechaInicio', '$fechaFin', '$monto', '2', '$dataTimeNow', '$dataTimeNow' )";
+if ($con->query($sqlInsertPay) === TRUE) {
+    $ban = true;
+    $cad .= 'Pago añadido con éxito.';
+} else {
+    $ban = false;
+    $cad .= 'No se pudo insertar el pago.<br>' . $con->error;
+}
 
 
 $cad = '';

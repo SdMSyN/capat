@@ -135,7 +135,7 @@
 									location.href = "index_capturista.php";
 									break;
 								case 5: //tecnico
-									location.href = "#";
+									location.href = "index_caja.php";
 									break;
 								case 6: // usuario
 									location.href = "#";
