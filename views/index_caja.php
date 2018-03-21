@@ -53,11 +53,11 @@
                                         <thead>
                                             <tr>
                                                 <th><span title="nameUser">Nombre</span></th>
-                                                <th><span title="ap">Tarjeta</span></th>
-                                                <th><span title="am">Folio</span></th>
-                                                <th><span title="folio">Num. de Contrato</span></th>
-                                                <th><span title="numCont">Periodo</span></th>
-                                                <th><span title="nameCom">Monto</span></th>
+                                                <th><span title="tarjUser">Tarjeta</span></th>
+                                                <th><span title="folioUser">Folio</span></th>
+                                                <th><span title="numContr">Num. de Contrato</span></th>
+                                                <th><span title="inicioFecha">Periodo</span></th>
+                                                <th><span title="monto">Monto</span></th>
                                                 <th>Acciones</th>
                                             </tr>
                                         </thead>
@@ -143,9 +143,80 @@
                 filtrar();
             });
             
+            //Buscar usuario
+            $("#buscar").keyup(function () {
+                var consulta = $(this).val();
+                $.ajax({
+                    type: "POST",
+                    data: {ordenar: ordenar, query: consulta},
+                    url: "../controllers/get_payments_info_user.php",
+                    success: function (msg) {
+                        console.log(msg);
+                        var msg = jQuery.parseJSON(msg);
+                        if (msg.error == 0) {
+                            $("#data tbody").html("");
+                            $.each(msg.dataRes, function (i, item) {
+                                var newRow = '<tr>'
+                                        + '<td>' + msg.dataRes[i].nombre + '</td>'
+                                        + '<td>' + msg.dataRes[i].tarj + '</td>'
+                                        + '<td>' + msg.dataRes[i].folio + '</td>'
+                                        + '<td>' + msg.dataRes[i].contr + '</td>'
+                                        + '<td>(' + msg.dataRes[i].inicioFecha + ' al '+msg.dataRes[i].finFecha+')</td>'
+                                        + '<td>' + msg.dataRes[i].monto + '</td>'
+                                        + '<td><button type="button" data-id="'+msg.dataRes[i].id+'" class="btn btn-danger payment" >Pagar</button></td>'
+                                        + '</tr>';
+                                $(newRow).appendTo("#data tbody");
+                            })
+                        } else {
+                            var newRow = '<tr><td colspan="3">' + msg.msgErr + '</td></tr>';
+                            $("#data tbody").html(newRow);
+                        }
+                    },
+                    error: function (x, e) {
+                        var cadErr = '';
+                        if (x.status == 0) {
+                            cadErr = '¡Estas desconectado!\n Por favor checa tu conexión a Internet.';
+                        } else if (x.status == 404) {
+                            cadErr = 'Página no encontrada.';
+                        } else if (x.status == 500) {
+                            cadErr = 'Error interno del servidor.';
+                        } else if (e == 'parsererror') {
+                            cadErr = 'Error.\nFalló la respuesta JSON.';
+                        } else if (e == 'timeout') {
+                            cadErr = 'Tiempo de respuesta excedido.';
+                        } else {
+                            cadErr = 'Error desconocido.\n' + x.responseText;
+                        }
+                        alert(cadErr);
+                    }
+                });
+            })
+            
             $("#data tbody").on('click', ".payment", function(){
                 var idPay = $(this).data('id');
                 console.log(idPay);
+                if (confirm("¿Está seguro que desea aceptar éste pago?") == true) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '../controllers/update_payment.php',
+                        data: {idPay: idPay},
+                        success: function (msg) {
+                          if (msg == "true") {
+                            $('.divError').css({color: "#77DD77"});
+                            $('.divError').html("Se actualizo el pago.");
+                            setTimeout(function () {
+                              location.href = 'index_caja.php';
+                            }, 1500);
+                            filtrar();
+                          } else {
+                            $('.divError').css({color: "#FF0000"});
+                            $('.divError').html(msg);
+                          }
+                        }
+                    });
+                }else{
+                    alert("Ten cuidado");
+                }
             })
 
             

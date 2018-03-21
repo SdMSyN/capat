@@ -2,6 +2,7 @@
 
 include ('../config/conexion.php');
 include ('../config/variables.php');
+include('../barcode/barcode.php');
 
 $idUser = $_POST['inputIDUser'];
 
@@ -42,13 +43,18 @@ $rowGetTypeServ = $resGetTypeServ->fetch_assoc();
 $idTypeServ = $rowGetTypeServ['idTypeServ'];
 $nameTypeServ = $rowGetTypeServ['nameTypeServ'];
 
+//Generamos código de barras
+$code = $year.$mes.$dia.$hour.$minute.$second;
+barcode('../codigos/'.$code.'.png', $code, 20, 'horizontal', 'code128', true);
+
+
 //Insertamos información del pago
 $cad = '';
 $fechaInicio = $yearServ."-".($monthBegin+1)."-01";
 $fechaFin = $yearServ."-".$monthEnd."-01";
 $sqlInsertPay = "INSERT INTO $tPays "
-        . "(usuario_data_id, tipo_servicio_id, fecha_inicio, fecha_fin, monto, estatus_id, creado, actualizado) "
-        . "VALUES ('$idUser', '$idTypeServ', '$fechaInicio', '$fechaFin', '$monto', '2', '$dataTimeNow', '$dataTimeNow' )";
+        . "(usuario_data_id, tipo_servicio_id, fecha_inicio, fecha_fin, monto, estatus_id, ticket, creado, actualizado) "
+        . "VALUES ('$idUser', '$idTypeServ', '$fechaInicio', '$fechaFin', '$monto', '2', '$code', '$dataTimeNow', '$dataTimeNow' )";
 if ($con->query($sqlInsertPay) === TRUE) {
     $ban = true;
     $cad .= 'Pago añadido con éxito.';
@@ -142,7 +148,8 @@ $pdf->MultiCell(0, 4, utf8_decode("Nota: Éste recibo deberá de presentarlo el 
 $pdf->SetFont('Times', 'I', 8);
 $pdf->MultiCell(0, 4, utf8_decode("La reproducción no autorizada de éste comprobante constituye un delito en los terminos de las disposiciones fiscales. \n"
         . "El pago de éste recibo no libera al causante de adeudos posteriores."), 1, 'L');
-$pdf->Cell(0, 10, '', 1, 1, 'C', $pdf->Image('../dist/img/firma.png', $pdf->GetX() + 80, $pdf->GetY(), 30, 12));
+$pdf->Cell(130, 10, '', 1, 0, 'C', $pdf->Image('../dist/img/firma.png', $pdf->GetX() + 80, $pdf->GetY(), 30, 12));
+$pdf->Cell(60, 10, '', 1, 1, 'C', $pdf->Image('../codigos/'.$code.'.png', $pdf->GetX()+15, $pdf->GetY(), 30, 12, 'PNG'));
 $pdf->MultiCell(0, 4, utf8_decode("L.A.E. Veneranda \nTesorera Municipal"), 1, 'C');
 $pdf->SetDash(1,1);
 $pdf->Line(0, $pdf->GetY()+5, 220, $pdf->GetY()+5);
@@ -208,7 +215,8 @@ $pdf->MultiCell(0, 4, utf8_decode("Nota: Éste recibo deberá de presentarlo el 
 $pdf->SetFont('Times', 'I', 8);
 $pdf->MultiCell(0, 4, utf8_decode("La reproducción no autorizada de éste comprobante constituye un delito en los terminos de las disposiciones fiscales. \n"
         . "El pago de éste recibo no libera al causante de adeudos posteriores."), 1, 'L');
-$pdf->Cell(0, 10, '', 1, 1, 'C', $pdf->Image('../dist/img/firma.png', $pdf->GetX() + 80, $pdf->GetY(), 30, 12));
+$pdf->Cell(130, 10, '', 1, 0, 'C', $pdf->Image('../dist/img/firma.png', $pdf->GetX() + 80, $pdf->GetY(), 30, 12));
+$pdf->Cell(60, 10, '', 1, 1, 'C', $pdf->Image('../codigos/'.$code.'.png', $pdf->GetX()+15, $pdf->GetY(), 30, 12, 'PNG'));
 $pdf->MultiCell(0, 4, utf8_decode("L.A.E. Veneranda \nTesorera Municipal"), 1, 'C');
 $pdf->SetDash(1,1);
 $pdf->Line(0, $pdf->GetY()+5, 220, $pdf->GetY()+5);
@@ -274,7 +282,8 @@ $pdf->MultiCell(0, 4, utf8_decode("Nota: Éste recibo deberá de presentarlo el 
 $pdf->SetFont('Times', 'I', 8);
 $pdf->MultiCell(0, 4, utf8_decode("La reproducción no autorizada de éste comprobante constituye un delito en los terminos de las disposiciones fiscales. \n"
         . "El pago de éste recibo no libera al causante de adeudos posteriores."), 1, 'L');
-$pdf->Cell(0, 10, '', 1, 1, 'C', $pdf->Image('../dist/img/firma.png', $pdf->GetX() + 80, $pdf->GetY(), 30, 12));
+$pdf->Cell(130, 10, '', 1, 0, 'C', $pdf->Image('../dist/img/firma.png', $pdf->GetX() + 80, $pdf->GetY(), 30, 12));
+$pdf->Cell(60, 10, '', 1, 1, 'C', $pdf->Image('../codigos/'.$code.'.png', $pdf->GetX()+15, $pdf->GetY(), 30, 12, 'PNG'));
 $pdf->MultiCell(0, 4, utf8_decode("L.A.E. Veneranda \nTesorera Municipal"), 1, 'C');
  
 $pdf->Output();

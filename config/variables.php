@@ -8,6 +8,10 @@
     $dia = date("d");
     $mes = date("m");
     $year = date("Y");
+    $hour = date("H");
+    $minute = date("i");
+    $second = date("s");
+    
     $folderUpPerfil = "../uploads/perfil/";
 	
 ?>

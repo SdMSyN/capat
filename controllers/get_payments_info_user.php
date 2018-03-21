@@ -15,25 +15,31 @@ $sqlGetPays = "SELECT $tUsersData.name as nameUser, $tUsersData.ap as apUser, $t
         . "INNER JOIN $tContratos ON $tContratos.id = $tUsersData.contrato_id "
         . "WHERE $tPays.estatus_id = '2'  ";
 
-/*
+
 //Buscar
 $query = (isset($_POST['query'])) ? $_POST['query'] : "";
 if ($query != '') {
-    $sqlGetCom .= " AND $tTypeServ.nombre LIKE '%$query%' ";
+    $sqlGetPays .= " AND $tUsersData.name LIKE '%$query%' ";
+    $sqlGetPays .= " OR $tUsersData.ap LIKE '%$query%' ";
+    $sqlGetPays .= " OR $tUsersData.am LIKE '%$query%' ";
+    $sqlGetPays .= " OR $tUsersData.tarjeta LIKE '%$query%' ";
+    $sqlGetPays .= " OR $tUsersData.folio LIKE '%$query%' ";
+    $sqlGetPays .= " OR $tContratos.numero_contrato LIKE '%$query%' ";
+    $sqlGetPays .= " OR $tPays.ticket LIKE '%$query%' ";
 }
-
+/*
 //editar (buscar por ID)
 $edit = (isset($_POST['idColony'])) ? $_POST['idColony'] : "";
 if ($edit != '') {
     $sqlGetCom .= " AND $tTypeServ.id = $edit ";
 }
-
+*/
 //Ordenar ASC y DESC
 $vorder = (isset($_POST['orderby'])) ? $_POST['orderby'] : "";
 if ($vorder != '') {
-    $sqlGetCom .= " ORDER BY " . $vorder;
+    $sqlGetPays .= " ORDER BY " . $vorder;
 }
-*/
+
 
 $resGetPays = $con->query($sqlGetPays);
 if ($resGetPays->num_rows > 0) {
