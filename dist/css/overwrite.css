@@ -45,6 +45,11 @@ label.error {
 	content: "\f161";
 }
 .login-page{
-	background-image: url('../img/fondo_3.jpg');
-	
+	background-image: url('../img/fondo_3.jpg');	
+}
+
+.content-wrapper{
+    background-image: url('../img/fondo_3.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
