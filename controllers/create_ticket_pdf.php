@@ -149,7 +149,7 @@ $pdf->SetFont('Times', 'I', 8);
 $pdf->MultiCell(0, 4, utf8_decode("La reproducción no autorizada de éste comprobante constituye un delito en los terminos de las disposiciones fiscales. \n"
         . "El pago de éste recibo no libera al causante de adeudos posteriores."), 1, 'L');
 $pdf->Cell(130, 10, '', 1, 0, 'C', $pdf->Image('../dist/img/firma.png', $pdf->GetX() + 80, $pdf->GetY(), 30, 12));
-$pdf->Cell(60, 10, '', 1, 1, 'C', $pdf->Image('../codigos/'.$code.'.png', $pdf->GetX()+15, $pdf->GetY(), 30, 12, 'PNG'));
+$pdf->Cell(60, 10, '', 1, 1, 'C', $pdf->Image('../codigos/'.$code.'.png', $pdf->GetX(), $pdf->GetY(), 60, 22, 'PNG'));
 $pdf->MultiCell(0, 4, utf8_decode("L.A.E. Veneranda \nTesorera Municipal"), 1, 'C');
 $pdf->SetDash(1,1);
 $pdf->Line(0, $pdf->GetY()+5, 220, $pdf->GetY()+5);
